@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.logging.Level;
+
+import static org.example.Main.logger;
 
 public class IDFC implements RBI{
     Connection connection;
@@ -24,7 +27,7 @@ public class IDFC implements RBI{
             customer_id = customer.getCustomerAadhar();
         }else{
             // Existing customer
-            System.out.print("Enter your customerID: ");
+            logger.log(Level.INFO,"Enter your customerID: ");
             try {
                 customer_id = buff.readLine();
             } catch (IOException e) {
@@ -42,8 +45,8 @@ public class IDFC implements RBI{
             if(countCustomers == 0){
                 boolean valid_flag = true;
                 while(valid_flag) {
-                    System.out.println("You entered a invalid customerID");
-                    System.out.print("Do you want to enter correct customerID? (yes/no) ");
+                    logger.log(Level.INFO,"You entered a invalid customerID");
+                    logger.log(Level.INFO,"Do you want to enter correct customerID? (yes/no) ");
                     String check_exit;
                     try {
                         check_exit = buff.readLine();
@@ -58,7 +61,7 @@ public class IDFC implements RBI{
             }
         }
         while(check_flag) {
-            System.out.println("Select what you want to do?\n1. Deposit Money\n2. Withdraw Money\n3. Open FD\n4. Apply for Loan\n5. Apply for Credit Card\n6. Check Balance");
+            logger.log(Level.INFO,"Select what you want to do?\n1. Deposit Money\n2. Withdraw Money\n3. Open FD\n4. Apply for Loan\n5. Apply for Credit Card\n6. Check Balance");
             int check_option;
             try {
                 check_option = Integer.parseInt(buff.readLine());
@@ -67,7 +70,7 @@ public class IDFC implements RBI{
             }
             switch (check_option){
                 case 1 -> {
-                    System.out.print("Enter the amount you want to deposit: ");
+                    logger.log(Level.INFO,"Enter the amount you want to deposit: ");
                     float deposit_money;
                     try {
                         deposit_money = Float.parseFloat(buff.readLine());
@@ -77,7 +80,7 @@ public class IDFC implements RBI{
                     depositMoney(deposit_money, customer_id);
                 }
                 case 2 -> {
-                    System.out.print("Enter the amount you want to withdraw: ");
+                    logger.log(Level.INFO,"Enter the amount you want to withdraw: ");
                     float withdraw_money;
                     try {
                         withdraw_money = Float.parseFloat(buff.readLine());
@@ -87,14 +90,14 @@ public class IDFC implements RBI{
                     withdrawMoney(withdraw_money, customer_id);
                 }
                 case 3 -> {
-                    System.out.print("Enter the amount you want to FD: ");
+                    logger.log(Level.INFO,"Enter the amount you want to FD: ");
                     float fd_money;
                     try {
                         fd_money = Float.parseFloat(buff.readLine());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.print("Enter the years you want to invest: ");
+                    logger.log(Level.INFO,"Enter the years you want to invest: ");
                     int years;
                     try {
                         years = Integer.parseInt(buff.readLine());
@@ -111,9 +114,9 @@ public class IDFC implements RBI{
                     loan_reason.add("Education Loan");
                     loan_reason.add("Personal Loan");
                     loan_reason.add("Car Loan");
-                    System.out.println("Select your loan type: ");
+                    logger.log(Level.INFO,"Select your loan type: ");
                     for (int i = 0; i < loan_reason.size(); i++) {
-                        System.out.println(i + 1 + ". " + loan_reason.get(i));
+                        logger.log(Level.INFO,i + 1 + ". " + loan_reason.get(i));
                     }
                     try {
                         reason = Integer.parseInt(buff.readLine());
@@ -125,14 +128,14 @@ public class IDFC implements RBI{
                     IDFC_loan_types.put("Education Loan", 3f);
                     IDFC_loan_types.put("Personal Loan", 6f);
                     IDFC_loan_types.put("Car Loan", 8f);
-                    System.out.println("Thank you for choosing our " + loan_reason.get(reason - 1));
-                    System.out.print("Enter your Loan amount: ");
+                    logger.log(Level.INFO,"Thank you for choosing our " + loan_reason.get(reason - 1));
+                    logger.log(Level.INFO,"Enter your Loan amount: ");
                     try {
                         loan_amount = Float.parseFloat(buff.readLine());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.print("Enter your Loan tenure: ");
+                    logger.log(Level.INFO,"Enter your Loan tenure: ");
                     try {
                         loan_years = Integer.parseInt(buff.readLine());
                     } catch (IOException e) {
@@ -142,7 +145,7 @@ public class IDFC implements RBI{
                     applyLoan(loan_type, loan_amount, IDFC_loan_types.get(loan_type) + rbi_loan_ROI, loan_years, customer_id);
                 }
                 case 5 -> {
-                    System.out.print("Enter you want your Credit card limit be: ");
+                    logger.log(Level.INFO,"Enter you want your Credit card limit be: ");
                     float credit_amount;
                     try {
                         credit_amount = Float.parseFloat(buff.readLine());
@@ -151,10 +154,10 @@ public class IDFC implements RBI{
                     }
                     applyCreditCard(credit_amount, idfc_credit_ROI + rbi_credit_ROI, customer_id);
                 }
-                case 6 -> System.out.println("Your current balance is: " + getBalance(customer_id));
-                default -> System.out.println("Invalid operation selected");
+                case 6 -> logger.log(Level.INFO,"Your current balance is: " + getBalance(customer_id));
+                default -> logger.log(Level.INFO,"Invalid operation selected");
             }
-            System.out.print("Are you done? (yes/no) ");
+            logger.log(Level.INFO,"Are you done? (yes/no) ");
             String check_exit;
             try {
                 check_exit = buff.readLine();
@@ -193,7 +196,7 @@ public class IDFC implements RBI{
             float balance = resultSet.getFloat(8);
             balance -= (withdraw_count > 3) ? withdraw_money * (1 + rbi_surcharge / 100) : withdraw_money;
             if(balance < 1000f){
-                System.out.println("Insufficient Balance in your account");
+                logger.log(Level.INFO,"Insufficient Balance in your account");
                 withdraw_count--;
                 return;
             }
@@ -211,14 +214,14 @@ public class IDFC implements RBI{
         for(int year = 1; year <= years; year++){
             total_fd_money += total_fd_money * (idfc_fd_ROI / 100);
             if(flag){
-                System.out.println("After " + year + " year your capital is: " + total_fd_money);
+                logger.log(Level.INFO,"After " + year + " year your capital is: " + total_fd_money);
                 flag = false;
                 continue;
             }
-            System.out.println("After " + year + " years your capital is: " + total_fd_money);
+            logger.log(Level.INFO,"After " + year + " years your capital is: " + total_fd_money);
         }
         float profit = total_fd_money - amount;
-        System.out.println("After " + years + " years your profit is: " + profit);
+        logger.log(Level.INFO,"After " + years + " years your profit is: " + profit);
     }
 
     @Override
@@ -233,12 +236,12 @@ public class IDFC implements RBI{
             throw new RuntimeException(e);
         }
         if(amount > 2 * balance){
-            System.out.println("You are ineligible for this Loan.");
+            logger.log(Level.INFO,"You are ineligible for this Loan.");
             return;
         }
         float total_loan_money = (float) (amount * Math.pow(((100+loan_ROI)/100),years));
         float loan_amount = total_loan_money-amount;
-        System.out.println("After " + years + " years your total loan amount " + "of your " + loanType + " is: " + loan_amount);
+        logger.log(Level.INFO,"After " + years + " years your total loan amount " + "of your " + loanType + " is: " + loan_amount);
     }
 
     @Override
@@ -253,11 +256,11 @@ public class IDFC implements RBI{
             throw new RuntimeException(e);
         }
         if(amount > 2 * balance){
-            System.out.println("You are ineligible for this Loan.");
+            logger.log(Level.INFO,"You are ineligible for this Loan.");
             return;
         }
         float monthly_credit_money = amount * (1 + credit_ROI / 100) / 12;
-        System.out.println("In every month you have to pay: " + monthly_credit_money);
+        logger.log(Level.INFO,"In every month you have to pay: " + monthly_credit_money);
     }
 
     @Override

@@ -5,23 +5,26 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+
+import static org.example.Main.logger;
 
 public class Customer {
     String customerName, customerEmail, customerAddress, customerGender, customerAadhar, customerPhone;
     int customerBalance = 0;
     public Customer(BufferedReader buff, Connection connection) {
         try {
-            System.out.print("Enter your name: ");
+            logger.log(Level.INFO,"Enter your name: ");
             this.customerName = buff.readLine();
-            System.out.print("Enter your email: ");
+            logger.log(Level.INFO,"Enter your email: ");
             this.customerEmail = buff.readLine();
-            System.out.print("Enter your address: ");
+            logger.log(Level.INFO,"Enter your address: ");
             this.customerAddress = buff.readLine();
-            System.out.print("Enter your gender: ");
+            logger.log(Level.INFO,"Enter your gender: ");
             this.customerGender = buff.readLine();
-            System.out.print("Enter your aadhar number: ");
+            logger.log(Level.INFO,"Enter your aadhar number: ");
             customerAadhar = buff.readLine();
-            System.out.print("Enter your phone number: ");
+            logger.log(Level.INFO,"Enter your phone number: ");
             this.customerPhone = buff.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);

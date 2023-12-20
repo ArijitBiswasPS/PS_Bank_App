@@ -3,10 +3,13 @@ package org.example;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.logging.Level;
+
+import static org.example.Main.logger;
 
 public class Bank {
     public Bank(BufferedReader buff, Connection connection, int selectedBank){
-        System.out.println("1. Are you a new customer?\n2. Are you an existing customer?");
+        logger.log(Level.INFO,"1. Are you a new customer?\n2. Are you an existing customer?");
         int check_customer;
         try {
             check_customer = Integer.parseInt(buff.readLine());

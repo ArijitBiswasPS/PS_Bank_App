@@ -6,6 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.logging.Level;
+
+import static org.example.Main.logger;
 
 public class AXIS implements RBI{
     Connection connection;
@@ -21,7 +24,7 @@ public class AXIS implements RBI{
             customer_id = customer.getCustomerAadhar();
         }else{
             // Existing customer
-            System.out.print("Enter your customerID: ");
+            logger.log(Level.INFO,"Enter your customerID: ");
             try {
                 customer_id = buff.readLine();
             } catch (IOException e) {
@@ -40,7 +43,7 @@ public class AXIS implements RBI{
                 boolean valid_flag = true;
                 while(valid_flag) {
                     System.out.println("You entered a invalid customerID");
-                    System.out.print("Do you want to enter correct customerID? (yes/no) ");
+                    logger.log(Level.INFO,"Do you want to enter correct customerID? (yes/no) ");
                     String check_exit;
                     try {
                         check_exit = buff.readLine();
@@ -64,7 +67,7 @@ public class AXIS implements RBI{
             }
             switch (check_option){
                 case 1 -> {
-                    System.out.print("Enter the amount you want to deposit: ");
+                    logger.log(Level.INFO,"Enter the amount you want to deposit: ");
                     float deposit_money;
                     try {
                         deposit_money = Float.parseFloat(buff.readLine());
@@ -74,7 +77,7 @@ public class AXIS implements RBI{
                     depositMoney(deposit_money, customer_id);
                 }
                 case 2 -> {
-                    System.out.print("Enter the amount you want to withdraw: ");
+                    logger.log(Level.INFO,"Enter the amount you want to withdraw: ");
                     float withdraw_money;
                     try {
                         withdraw_money = Float.parseFloat(buff.readLine());
@@ -84,14 +87,14 @@ public class AXIS implements RBI{
                     withdrawMoney(withdraw_money, customer_id);
                 }
                 case 3 -> {
-                    System.out.print("Enter the amount you want to FD: ");
+                    logger.log(Level.INFO,"Enter the amount you want to FD: ");
                     float fd_money;
                     try {
                         fd_money = Float.parseFloat(buff.readLine());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.print("Enter the years you want to invest: ");
+                    logger.log(Level.INFO,"Enter the years you want to invest: ");
                     int years;
                     try {
                         years = Integer.parseInt(buff.readLine());
@@ -123,13 +126,13 @@ public class AXIS implements RBI{
                     AXIS_loan_types.put("Personal Loan", 6f);
                     AXIS_loan_types.put("Car Loan", 8f);
                     System.out.println("Thank you for choosing our " + loan_reason.get(reason - 1));
-                    System.out.print("Enter your Loan amount: ");
+                    logger.log(Level.INFO,"Enter your Loan amount: ");
                     try {
                         loan_amount = Float.parseFloat(buff.readLine());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.print("Enter your Loan tenure: ");
+                    logger.log(Level.INFO,"Enter your Loan tenure: ");
                     try {
                         loan_years = Integer.parseInt(buff.readLine());
                     } catch (IOException e) {
@@ -139,7 +142,7 @@ public class AXIS implements RBI{
                     applyLoan(loan_type, loan_amount, AXIS_loan_types.get(loan_type) + rbi_loan_ROI, loan_years, customer_id);
                 }
                 case 5 -> {
-                    System.out.print("Enter you want your Credit card limit be: ");
+                    logger.log(Level.INFO,"Enter you want your Credit card limit be: ");
                     float credit_amount;
                     try {
                         credit_amount = Float.parseFloat(buff.readLine());
@@ -151,7 +154,7 @@ public class AXIS implements RBI{
                 case 6 -> System.out.println("Your current balance is: " + getBalance(customer_id));
                 default -> System.out.println("Invalid operation selected");
             }
-            System.out.print("Are you done? (yes/no) ");
+            logger.log(Level.INFO,"Are you done? (yes/no) ");
             String check_exit;
             try {
                 check_exit = buff.readLine();
